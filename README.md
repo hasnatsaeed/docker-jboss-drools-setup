@@ -2,20 +2,31 @@ In this short tutorial we will setup **JBoss Drools Workbench** (**_7.17.0.Final
 
 ## Step 1
 
-Login into AWS Console and from EC2 Dashboard, launch an AWS EC2 instance (64-bit x86) that has Ubuntu 18.04 installed on it. The AMI image to use is **_ami-0c55b159cbfafe1f0_**
+Login into AWS Console and from EC2 Dashboard, launch an AWS EC2 instance **(64-bit x86)** that has **Ubuntu 18.04** installed on it. The AMI image to use is **_ami-0c55b159cbfafe1f0_**. For this tutorial we can work with a **t2.medium** instance type.
 
 ![](1.png)
 
-For this tutorial we can work with a t2.medium instance type.
+![](2.png)
 
-Configure a security group as shown below. We have allowed an inbound traffic from anywhere on TCP ports 22, 8080 and 8081. This done for SSH, Drools workbench and KIE server respectively.
+## Step 2
 
-Please continue launching the instance. On Review Instance Launch screen, generate a private key pair and keep it somewhere save on your local machine. We will use it later to SSH into our EC2 instance.
+Configure a security group for our EC2 instance as shown below. 
+
+![](3.png)
+
+We have allowed an inbound traffic from anywhere on TCP ports **22**, **8080** and **8081**. This done for **SSH**, **JBoss Drools Workbench** and **KIE server** respectively.
+
+Please continue launching the instance. On **_Review Instance Launch_** screen, generate a private key pair and keep it somewhere save on your local machine. We will use it later to SSH into our EC2 instance.
 
 Below are the details of the EC2 instance that we are about to launch.
 
-Wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we download while launching the instance. Since I am on windows, I will be using Bash on Ubuntu On Windows to SSH
-The command to SSH into the instance is
+![](4.png)
+
+Now wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
+
+``` ssh-agent ```
+
+The command to SSH into our EC2 instance is
 
 ```ssh –i <private-key-name>.pem ubuntu@<public-ip>```
 
