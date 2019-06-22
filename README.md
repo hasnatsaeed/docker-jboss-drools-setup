@@ -78,29 +78,49 @@ Create the required directory (**/wb_git**) with below command under **/home/ubu
 
 Once the JBoss Drools Workbench is up and running, we can access it at:
 
-``` http://<public-ip>:8080/business-central/kie-wb.jsp# ```
+``` [Link](http://<public-ip>:8080/business-central/kie-wb.jsp# ```
 
 There are 6 default users that come with this image which you can use to login. Let’s use the **admin** user to sign in. The password for admin user is **admin**. **_Please make sure you change the passwords for these default users for security purposes._**
 
 On successful login, we are in JBoss Drools Workbench
 
-Now let’s setup the KIE server 7.17.0.Final on Wildfly 14.0.1.Final.
-The JBoss KIE Execution server is intended to be used as a standalone runtime execution environment managed by a KIE Drools Workbench or a jBPM Workbench application that acts as a controller.
-Once having a KIE Drools Workbench or a jBPM Workbench application container running, you can run several execution server instances linked with your workbench
-We will install KIE server using Docker. Inside the console, execute the below command.
-```sudo docker run -p 8180:8080 -d --name kie-server --link drools-workbench:kie-wb jboss/kie-server-showcase:latest```
-This command will download the Docker image for KIE server 7.17.0.Final from ```https://hub.docker.com/r/jboss/kie-server-showcase/``` and start a container from this image.
-We are mapping the 8180 port on host machine to 8080 port inside the container. Inside the container, the KIE server is deployed inside the Wildfly server that is listening on port 8080. With this mapping, we can access the KIE server from host machine at port 8080.
+![](6.png)
 
-The use of the --link drools-workbench:kie-wb tells the container to:
--	Use our JBoss Drools Workbench (drools-workbench) container as the controller for the execution server.
+## Step 6
+
+Now let’s setup **KIE server 7.17.0.Final** on **Wildfly 14.0.1.Final**.
+
+The JBoss KIE Execution server is intended to be used as a standalone runtime execution environment managed by a JBoss Drools Workbench or a jBPM Workbench application that acts as a controller.
+
+Once having a JBoss Drools Workbench or a jBPM Workbench application container running, you can run several execution server instances linked with your workbench.
+
+We will install **KIE server 7.17.0.Final** using Docker. Inside the console, execute the below command.
+
+```> sudo docker run -p 8180:8080 -d --name kie-server --link drools-workbench:kie-wb jboss/kie-server-showcase:latest ```
+
+This command will download the Docker image for **KIE server 7.17.0.Final** from ```https://hub.docker.com/r/jboss/kie-server-showcase/``` and start a container from this image.
+
+Notice that we are mapping the **8180** port on host machine to **8080** port inside the container. Inside the container, the KIE server is deployed inside the Wildfly server that is listening on port 8080. With this mapping, we can access the KIE server from host machine at port 8180.
+
+The use of the **--link** in docker run command tells the container to:
+
+-	Use our JBoss Drools Workbench (**drools-workbench**) container as the controller for the execution server.
+
 -	The repository in the Maven settings, for consuming our artifacts from the drools-workbench container, is automatically set.
-So at the point the execution server container is up and running, this server instance will be automatically detected and available in our Drools/jBPM Workbench application, so we can deploy and run our application rules, etc into it.
-For more information, please read the documentation at ```https://docs.jboss.org/drools/release/7.17.0.Final/drools-docs/html_single/#_installing_the_kie_server```
 
-Once the KIE server is up and running, login into JBoss Drools Workbench and go to Deploy -> Execution Servers. There you will see the KIE server instance listed under SERVER CONFIGURATIONS.
+At the point the KIE server container is up and running, this server instance will be automatically detected and available in our JBoss Drools/jBPM Workbench application, so we can deploy and run our application rules, etc into it.
 
-This concludes our tutorial. We can now draft rules in our JBoss Drools Workbench, build them and deploy them to our KIE server instance. Once deployed we can call the KIE server Rest API to execute the deployed rules. Below is the basic cURL skeleton for a POST request:
+For more information, please read the documentation at:
+
+```https://docs.jboss.org/drools/release/7.17.0.Final/drools-docs/html_single/#_installing_the_kie_server```
+
+Once the KIE server is up and running, login into JBoss Drools Workbench and go to **Deploy -> Execution Servers**. There you will see the KIE server instance listed under **SERVER CONFIGURATIONS**.
+
+![](7.png)
+
+This concludes our tutorial for setting up JBoss Drools Workbench and KIE server using Docker. 
+
+We can now draft rules in our JBoss Drools Workbench, build them and deploy them to our KIE server instance. Once deployed we can call the KIE server Rest API to execute the deployed rules. Below is the basic cURL skeleton for a POST request:
 
 ```curl -X POST \
   http://<public-ip>:8081/kie-server/services/rest/server/containers/instances/<deployment-unit-id> \
@@ -109,8 +129,9 @@ This concludes our tutorial. We can now draft rules in our JBoss Drools Workbenc
   -H 'content-type: application/json' \
 -D ‘<data>’```
   
-The Rest API requires a basic authorization header that is created from the user name and password set for the KIE server. The default user name and password is kieserver and kieserver1! respectively. Please change these for security reasons.
-The deployment-unit-id is the ID of the deployment unit that is created on the KIE server instance whenever we build and deploy our project. This can be accessed from JBoss Drools Workbench (Deploy -> Execution Servers) as shown below.
+The Rest API requires a basic authorization header that is created from the **user name** and **password** set for the KIE server. The default user name and password is **kieserver** and **kieserver1!** respectively. **_Please change these for security reasons!_**
+
+The **deployment-unit-id** is the ID of the deployment unit that is created on the KIE server instance whenever we build and deploy our project. This can be accessed from JBoss Drools Workbench **(Deploy -> Execution Servers)** as shown below.
 
 Best Practices:
 -	Considering the way we setup, we can back up our project data outside of our EC2 instance by using Git to push everything under /home/Ubuntu/wb_git to some Git hosting service provider like Github or Bitbucket. The /home/Ubuntu/wb_git is the directory on our host machine that is used by drools-workbench (JBoss Drools Workbench) and kie-server (KIE server) containers to keep the required project data.
