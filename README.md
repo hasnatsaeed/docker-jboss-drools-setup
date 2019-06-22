@@ -25,7 +25,7 @@ Below are the details of the EC2 instance that we are about to launch.
 ## Step 3
 Now wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
 
-``` ssh-agent ```{: style="text-align: center"}
+``` ssh-agent ```{: style="text-align: center;display: inline-block"}
 
 
 The command to SSH into our EC2 instance is
