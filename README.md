@@ -78,7 +78,7 @@ Create the required directory (**/wb_git**) with below command under **/home/ubu
 
 Once the JBoss Drools Workbench is up and running, we can access it at:
 
-``` [Link](http://<public-ip>:8080/business-central/kie-wb.jsp# ```
+``` http://<public-ip>:8080/business-central/kie-wb.jsp# ```
 
 There are 6 default users that come with this image which you can use to login. Let’s use the **admin** user to sign in. The password for admin user is **admin**. **_Please make sure you change the passwords for these default users for security purposes._**
 
@@ -96,7 +96,7 @@ Once having a JBoss Drools Workbench or a jBPM Workbench application container r
 
 We will install **KIE server 7.17.0.Final** using Docker. Inside the console, execute the below command.
 
-```> sudo docker run -p 8180:8080 -d --name kie-server --link drools-workbench:kie-wb jboss/kie-server-showcase:latest ```
+``` > sudo docker run -p 8180:8080 -d --name kie-server --link drools-workbench:kie-wb jboss/kie-server-showcase:latest ```
 
 This command will download the Docker image for **KIE server 7.17.0.Final** from ```https://hub.docker.com/r/jboss/kie-server-showcase/``` and start a container from this image.
 
@@ -112,7 +112,7 @@ At the point the KIE server container is up and running, this server instance wi
 
 For more information, please read the documentation at:
 
-```https://docs.jboss.org/drools/release/7.17.0.Final/drools-docs/html_single/#_installing_the_kie_server```
+``` https://docs.jboss.org/drools/release/7.17.0.Final/drools-docs/html_single/#_installing_the_kie_server ```
 
 Once the KIE server is up and running, login into JBoss Drools Workbench and go to **Deploy -> Execution Servers**. There you will see the KIE server instance listed under **SERVER CONFIGURATIONS**.
 
@@ -122,16 +122,16 @@ This concludes our tutorial for setting up JBoss Drools Workbench and KIE server
 
 We can now draft rules in our JBoss Drools Workbench, build them and deploy them to our KIE server instance. Once deployed we can call the KIE server Rest API to execute the deployed rules. Below is the basic cURL skeleton for a POST request:
 
-```curl -X POST \
-  http://<public-ip>:8081/kie-server/services/rest/server/containers/instances/<deployment-unit-id> \
-  -H 'authorization: <basic-auth>' \
-  -H 'cache-control: no-cache' \
-  -H 'content-type: application/json' \
--D ‘<data>’```
+``` > curl -X POST http://<public-ip>:8081/kie-server/services/rest/server/containers/instances/<deployment-unit-id> -H 'authorization: <basic-auth>' -H 'cache-control: no-cache' -H 'content-type: application/json' -D '<data>' ```
   
 The Rest API requires a basic authorization header that is created from the **user name** and **password** set for the KIE server. The default user name and password is **kieserver** and **kieserver1!** respectively. **_Please change these for security reasons!_**
 
 The **deployment-unit-id** is the ID of the deployment unit that is created on the KIE server instance whenever we build and deploy our project. This can be accessed from JBoss Drools Workbench **(Deploy -> Execution Servers)** as shown below.
 
-Best Practices:
--	Considering the way we setup, we can back up our project data outside of our EC2 instance by using Git to push everything under /home/Ubuntu/wb_git to some Git hosting service provider like Github or Bitbucket. The /home/Ubuntu/wb_git is the directory on our host machine that is used by drools-workbench (JBoss Drools Workbench) and kie-server (KIE server) containers to keep the required project data.
+## Best Practices:
+
+-	Considering the way we have setup, we can back up our project data outside of our EC2 instance by using Git to push everything under **/home/ubuntu/wb_git** to some Git hosting service provider like Github or Bitbucket. 
+The **/home/ubuntu/wb_git** is the directory on our host machine that is used by drools-workbench (JBoss Drools Workbench) and kie-server (KIE server) containers to keep the required project data.
+
+- We can use Docker Compose to setup our JBoss Drools Workbench and KIE server containers with just a single command. Docker Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application's services/containers. Then, with a single command, you create and start all the service/containers from your configuration.
+To learn more about Docker Compose visit: ```https://docs.docker.com/compose/```
