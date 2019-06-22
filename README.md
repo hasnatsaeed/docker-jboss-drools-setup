@@ -4,7 +4,7 @@ In this short tutorial we will setup **JBoss Drools Workbench** (**_7.17.0.Final
 
 Login into AWS Console and from EC2 Dashboard, launch an AWS EC2 instance **(64-bit x86)** that has **Ubuntu 18.04** installed on it. The AMI image to use is **_ami-0c55b159cbfafe1f0_**. For this tutorial we can work with a **t2.medium** instance type.
 
-![](1.png)
+![](1.png){: style="text-align: center;display: block"}
 
 ![](2.png)
 
@@ -23,46 +23,64 @@ Below are the details of the EC2 instance that we are about to launch.
 ![](4.png)
 
 ## Step 3
+
 Now wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
 
-``` ssh-agent ```{: style="text-align: center;display: block"}
+``` > ssh-agent ```
 
 
 The command to SSH into our EC2 instance is
 
-```ssh –i <private-key-name>.pem ubuntu@<public-ip>```
+``` > ssh –i <private-key-name>.pem ubuntu@<public-ip> ```
 
 ## Step 4
+
 Once we are in, we need to install Docker CE. For that we can refer to the official Docker documentation for installing Docker on Ubuntu which is at the following URL. You can skip to **Install Docker CE** section.
 
 ```https://docs.docker.com/install/linux/docker-ce/ubuntu/```
 
 To verify your Docker installation, you can run the following command:
 
-<p style="text-align: center;">```sudo docker run hello-world```</p>
+``` > sudo docker run hello-world ```
 
 
 Your output will look like as shown below.
 
-![](5.png)
+![](5.png){: style="text-align: center;display: block"}
+
+## Step 5
 
 Now we need to install JBoss Drools Workbench and KIE server.
-Let’s setup JBoss Drools Workbench 7.17.0.Final on Wildfly 14.0.1.Final using Docker.
-In the console, run the below command:
-```sudo docker run -p 8080:8080 -p 8001:8001 -e JAVA_OPTS="-server -Xms1024m -Xmx1024m -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8" -v /home/ubuntu/wb_git:/opt/jboss/wildfly/bin/.niogit:Z -d --name drools-workbench jboss/drools-workbench-showcase:latest```
 
-This command will download the JBoss Drools Workbench showcase image from Docker Hub and start a container based on this image. You can learn more about this image and the available configurations at 
+Let’s setup **JBoss Drools Workbench 7.17.0.Final** on **Wildfly 14.0.1.Final** using **Docker**.
+
+In the console, run the below command:
+
+``` > sudo docker run -p 8080:8080 -p 8001:8001 -e JAVA_OPTS="-server -Xms1024m -Xmx1024m -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8" -v /home/ubuntu/wb_git:/opt/jboss/wildfly/bin/.niogit:Z -d --name drools-workbench jboss/drools-workbench-showcase:latest ```
+
+This command will download the JBoss Drools Workbench showcase image from Docker Hub and start a container based on this image. You can learn more about this image and the available configurations at
+
 ```https://hub.docker.com/r/jboss/drools-workbench-showcase/```
-We are mapping the port 8080 and 8001 on host to port 8080 and 8001 inside the container. Inside the container, the Wildfly server on which Drools workbench is deployed is listening on these ports. By exposing these ports on the host we can access the JBoss Drools Workbench.
-We are also passing in environment variables to Wildfly instance to set the available memory for JVM which is 1024 MB (-Xms1024m -Xmx1024m).
-Also we are mounting the host directory /home/Ubuntu/wb_git to /opt/jboss/wildlfy/bin/.niogit
-By default, the internal GIT root directory for the JBoss Drools workbench container is located at /opt/jboss/wildfly/bin/.niogit. This will be removed along with all our project data once we stop and remove the container. To make this directory persistent across container terminations or even EC2 instance restarts, we are mounting this directory to a directory (/home/ubuntu/wb_git) on our host machine so that when the container is removed or the EC2 instance is restarted, our project data is still safe and we can simply create a new container and continue with our work.
-Create the required directory (/wb_git) with below command under /home/ubuntu/
-```mkdir -m777 wb_git```
+
+We are mapping the port **8080** and **8001** on host to port **8080** and **8001** inside the container. 
+
+Inside the container, the Wildfly server on which Drools workbench is deployed is listening on these ports. By exposing these ports on the host we can access the JBoss Drools Workbench publicly.
+
+We are also passing in environment variables to Wildfly instance to set the available memory for JVM on startup which is **1024 MB** _(-Xms1024m -Xmx1024m)_.
+
+We have mounting the host directory **/home/Ubuntu/wb_git** to **/opt/jboss/wildlfy/bin/.niogit**. By default, the internal Git root directory for JBoss Drools Workbench container is located at **/opt/jboss/wildfly/bin/.niogit**. This will be removed along with all our project data once we stop and remove the container. 
+
+To make this directory persistent across container terminations or even EC2 instance restarts, we are mounting this directory to a directory (**/home/ubuntu/wb_git**) on our host machine so that when the container is removed or the EC2 instance is restarted, our project data is still safe and we can simply create a new container and continue with our work.
+
+Create the required directory (**/wb_git**) with below command under **/home/ubuntu/**
+
+```> mkdir -m777 wb_git ```
 
 Once the JBoss Drools Workbench is up and running, we can access it at:
-```http://<public-ip>:8080/business-central/kie-wb.jsp#```
-There are 6 default users that come with this image which you can use to login. Let’s use the ‘admin’ user to sign in. The password for admin user is ‘admin’. Please make sure you change the passwords for these default users for security purposes.
+
+``` http://<public-ip>:8080/business-central/kie-wb.jsp# ```
+
+There are 6 default users that come with this image which you can use to login. Let’s use the **admin** user to sign in. The password for admin user is **admin**. **_Please make sure you change the passwords for these default users for security purposes._**
 
 On successful login, we are in JBoss Drools Workbench
 
