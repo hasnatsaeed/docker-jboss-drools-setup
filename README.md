@@ -22,6 +22,7 @@ Below are the details of the EC2 instance that we are about to launch.
 
 ![](4.png)
 
+## Step 3
 Now wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
 
 ``` ssh-agent ```
@@ -30,13 +31,19 @@ The command to SSH into our EC2 instance is
 
 ```ssh –i <private-key-name>.pem ubuntu@<public-ip>```
 
-Once we are in, we need to install Docker CE. For that we can refer to the official Docker documentation for installing Docker on Ubuntu which is at the following URL. You can skip to Install Docker CE section.
+## Step 4
+Once we are in, we need to install Docker CE. For that we can refer to the official Docker documentation for installing Docker on Ubuntu which is at the following URL. You can skip to **Install Docker CE** section.
+
 ```https://docs.docker.com/install/linux/docker-ce/ubuntu/```
 
 To verify your Docker installation, you can run the following command:
-```sudo docker run hello-world```
 
-Your output will like as shown below
+<p style="text-align: center;">```sudo docker run hello-world```</p>
+
+
+Your output will look like as shown below.
+
+![](5.png)
 
 Now we need to install JBoss Drools Workbench and KIE server.
 Let’s setup JBoss Drools Workbench 7.17.0.Final on Wildfly 14.0.1.Final using Docker.
