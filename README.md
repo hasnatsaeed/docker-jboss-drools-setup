@@ -1,8 +1,13 @@
-In this short tutorial we will setup **JBoss Drools Workbench** (**_7.17.0.Final_**) and **KIE server** (**_7.17.0.Final_**) on **Wildfly** (**_4.0.1.Final_**) on **Ubunbtu** (**_18.04_**) using **Docker CE**.
+
+Hi,
+
+In this short tutorial we will setup **JBoss Drools Workbench** (**_7.17.0.Final_**) and **KIE server** (**_7.17.0.Final_**) on **Wildfly** (**_14.0.1.Final_**) on **Ubunbtu** (**_18.04_**) using **Docker CE**.
 
 ## Step 1
 
-Login into AWS Console and from EC2 Dashboard, launch an AWS EC2 instance **(64-bit x86)** that has **Ubuntu 18.04** installed on it. The AMI image to use is **_ami-0c55b159cbfafe1f0_**. For this tutorial we can work with a **t2.medium** instance type.
+Login into AWS Console and from EC2 Dashboard, launch an AWS EC2 instance **(64-bit x86)** that has **Ubuntu 18.04** installed on it. The AMI image to use is **_ami-0c55b159cbfafe1f0_**.
+
+For this tutorial we can work with a **t2.medium** instance type.
 
 ![](1.png){: style="text-align: center;display: block"}
 
@@ -14,9 +19,9 @@ Configure a security group for our EC2 instance as shown below.
 
 ![](3.png)
 
-We have allowed an inbound traffic from anywhere on TCP ports **22**, **8080** and **8081**. This done for **SSH**, **JBoss Drools Workbench** and **KIE server** respectively.
+We have allowed an inbound traffic from everywhere on TCP ports **22**, **8080** and **8081**. This is done so that we can access **SSH**, **JBoss Drools Workbench** and **KIE server** respectively.
 
-Please continue launching the instance. On **_Review Instance Launch_** screen, generate a private key pair and keep it somewhere save on your local machine. We will use it later to SSH into our EC2 instance.
+Please continue launching the EC2 instance. On **_Review Instance Launch_** screen, generate a private key pair and keep it somewhere save on your local machine. We will use it later to SSH into our EC2 instance.
 
 Below are the details of the EC2 instance that we are about to launch.
 
@@ -24,27 +29,29 @@ Below are the details of the EC2 instance that we are about to launch.
 
 ## Step 3
 
-Now wait for the instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
+Now wait for the EC2 instance to launch and then SSH into the instance using the public IP assigned and the private key that we saved while launching the instance. Since I am on windows, I will be using **Git Bash** to SSH. Start the SSH Agent using below command:
 
 ``` > ssh-agent ```
 
 
 The command to SSH into our EC2 instance is
 
-``` > ssh –i <private-key-name>.pem ubuntu@<public-ip> ```
+``` > ssh –i <private-key-file-name>.pem ubuntu@<public-ip-of-ec2-instance> ```
 
 ## Step 4
 
-Once we are in, we need to install Docker CE. For that we can refer to the official Docker documentation for installing Docker on Ubuntu which is at the following URL. You can skip to **Install Docker CE** section.
+Once we are in, we need to install Docker CE. For that we can refer to the official Docker documentation for installing Docker on Ubuntu which is at the following URL.
 
 ```https://docs.docker.com/install/linux/docker-ce/ubuntu/```
 
-To verify your Docker installation, you can run the following command:
+You can skip to **Install Docker CE** section.
+
+To verify our Docker installation, we can run the following command:
 
 ``` > sudo docker run hello-world ```
 
 
-Your output will look like as shown below.
+The output will look like as shown below.
 
 ![](5.png){: style="text-align: center;display: block"}
 
@@ -62,15 +69,15 @@ This command will download the JBoss Drools Workbench showcase image from Docker
 
 ```https://hub.docker.com/r/jboss/drools-workbench-showcase/```
 
-We are mapping the port **8080** and **8001** on host to port **8080** and **8001** inside the container. 
+Note that we are mapping the port **8080** and **8001** on host to port **8080** and **8001** inside the container. 
 
 Inside the container, the Wildfly server on which Drools workbench is deployed is listening on these ports. By exposing these ports on the host we can access the JBoss Drools Workbench publicly.
 
-We are also passing in environment variables to Wildfly instance to set the available memory for JVM on startup which is **1024 MB** _(-Xms1024m -Xmx1024m)_.
+We are also passing in environment variables to Wildfly instance to set the available memory for JVM on startup i.e. is **1024 MB** _(-Xms1024m -Xmx1024m)_.
 
-We have mounting the host directory **/home/Ubuntu/wb_git** to **/opt/jboss/wildlfy/bin/.niogit**. By default, the internal Git root directory for JBoss Drools Workbench container is located at **/opt/jboss/wildfly/bin/.niogit**. This will be removed along with all our project data once we stop and remove the container. 
+We have mounted the host directory **/home/Ubuntu/wb_git** to **/opt/jboss/wildlfy/bin/.niogit**. By default, the internal Git root directory for JBoss Drools Workbench container is located at **/opt/jboss/wildfly/bin/.niogit**. This will be removed along with all of our project data once we stop and remove the container. 
 
-To make this directory persistent across container terminations or even EC2 instance restarts, we are mounting this directory to a directory (**/home/ubuntu/wb_git**) on our host machine so that when the container is removed or the EC2 instance is restarted, our project data is still safe and we can simply create a new container and continue with our work.
+To make this directory persistent across container terminations or even EC2 instance restarts, we are mounting the host directory **/home/ubuntu/wb_git** to **/opt/jboss/wildlfy/bin/.niogit** so that when the container is removed or the EC2 instance is restarted, our project data is still safe and we can simply create a new container and continue with our work.
 
 Create the required directory (**/wb_git**) with below command under **/home/ubuntu/**
 
@@ -80,7 +87,7 @@ Once the JBoss Drools Workbench is up and running, we can access it at:
 
 ``` http://<public-ip>:8080/business-central/kie-wb.jsp# ```
 
-There are 6 default users that come with this image which you can use to login. Let’s use the **admin** user to sign in. The password for admin user is **admin**. **_Please make sure you change the passwords for these default users for security purposes._**
+There are 6 pre-configuerd users that come with this image which we can use to login. Let’s use the **admin** user to sign in. The password for admin user is **admin**. **_Please make sure you change the passwords for these default users for security purposes._**
 
 On successful login, we are in JBoss Drools Workbench
 
